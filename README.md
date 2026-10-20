@@ -243,5 +243,131 @@ document.getElementById("oranHesapla").addEventListener("click", () => {
     bicimlendir(parca / butun * 100) + " kadarıdır.";
 });
 </script>
+<!-- PDF ARAÇLARI -->
+<section id="pdf-araclari" style="padding:24px 12px; margin:20px auto; max-width:900px; font-family:Arial,sans-serif;">
+  <h2>📄 PDF Araçları</h2>
+  <p>PDF dosyalarını kolayca düzenle.</p>
+
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;">
+
+    <div style="padding:16px;border:1px solid #ddd;border-radius:12px;">
+      <h3>📚 PDF Birleştir</h3>
+      <input id="pdfMergeFiles" type="file" accept="application/pdf" multiple>
+      <button onclick="pdfBirlestir()">PDF'leri Birleştir</button>
+    </div>
+
+    <div style="padding:16px;border:1px solid #ddd;border-radius:12px;">
+      <h3>✂️ PDF Sayfalarını Ayır</h3>
+      <input id="pdfSplitFile" type="file" accept="application/pdf">
+      <p>Sayfa numarası (ör. 1,3,5)</p>
+      <input id="pdfSplitPages" type="text" placeholder="1,3,5">
+      <button onclick="pdfAyir()">Seçilen Sayfaları İndir</button>
+    </div>
+
+    <div style="padding:16px;border:1px solid #ddd;border-radius:12px;">
+      <h3>🖼️ PDF'yi Görsele Dönüştür</h3>
+      <input id="pdfImageFile" type="file" accept="application/pdf">
+      <button onclick="pdfGorsel()">PNG Görsellerini İndir</button>
+    </div>
+
+    <div style="padding:16px;border:1px solid #ddd;border-radius:12px;">
+      <h3>📦 PDF Boyutunu Optimize Et</h3>
+      <input id="pdfCompressFile" type="file" accept="application/pdf">
+      <button onclick="pdfOptimize()">Optimize Edilmiş PDF'yi İndir</button>
+      <p style="font-size:12px;">Boyut azalması garanti değildir.</p>
+    </div>
+
+  </div>
+  <p id="pdfStatus" role="status" style="margin-top:16px;"></p>
+</section>
+
+<script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script>
+pdfjsLib.GlobalWorkerOptions.workerSrc =
+  "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+
+const pdfStatus = document.getElementById("pdfStatus");
+
+async function pdfDosyaOku(inputId) {
+  const f = document.getElementById(inputId).files[0];
+  if (!f) throw new Error("Önce bir PDF dosyası seç.");
+  return new Uint8Array(await f.arrayBuffer());
+}
+
+function pdfIndir(bytes, name, type = "application/pdf") {
+  const url = URL.createObjectURL(new Blob([bytes], {type}));
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = name;
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(url), 2000);
+}
+
+async function pdfBirlestir() {
+  try {
+    const files = [...document.getElementById("pdfMergeFiles").files];
+    if (files.length < 2) throw new Error("En az iki PDF seç.");
+    const out = await PDFLib.PDFDocument.create();
+    for (const f of files) {
+      const src = await PDFLib.PDFDocument.load(
+        await f.arrayBuffer()
+      );
+      const pages = await out.copyPages(src, src.getPageIndices());
+      pages.forEach(p => out.addPage(p));
+    }
+    pdfIndir(await out.save(), "birlesik.pdf");
+    pdfStatus.textContent = "Birleştirme tamamlandı.";
+  } catch (e) { pdfStatus.textContent = e.message; }
+}
+
+async function pdfAyir() {
+  try {
+    const bytes = await pdfDosyaOku("pdfSplitFile");
+    const src = await PDFLib.PDFDocument.load(bytes);
+    const text = document.getElementById("pdfSplitPages").value.trim();
+    const nums = text.split(",").map(x => Number(x.trim()));
+    if (!text || nums.some(n => !Number.isInteger(n) || n < 1 || n > src.getPageCount()))
+      throw new Error("Geçerli sayfa numaraları yaz. Örnek: 1,3,5");
+    const out = await PDFLib.PDFDocument.create();
+    const pages = await out.copyPages(src, [...new Set(nums)].map(n => n - 1));
+    pages.forEach(p => out.addPage(p));
+    pdfIndir(await out.save(), "secili-sayfalar.pdf");
+    pdfStatus.textContent = "Sayfalar hazır.";
+  } catch (e) { pdfStatus.textContent = e.message; }
+}
+
+async function pdfGorsel() {
+  try {
+    const bytes = await pdfDosyaOku("pdfImageFile");
+    const doc = await pdfjsLib.getDocument({data: bytes}).promise;
+    for (let i = 1; i <= doc.numPages; i++) {
+      pdfStatus.textContent = i + "/" + doc.numPages + " sayfa hazırlanıyor...";
+      const page = await doc.getPage(i);
+      const viewport = page.getViewport({scale: 1.5});
+      const canvas = document.createElement("canvas");
+      canvas.width = viewport.width;
+      canvas.height = viewport.height;
+      await page.render({canvasContext: canvas.getContext("2d"), viewport}).promise;
+      const blob = await new Promise(resolve => canvas.toBlob(resolve, "image/png"));
+      pdfIndir(await blob.arrayBuffer(), "sayfa-" + i + ".png", "image/png");
+      canvas.width = 0;
+      canvas.height = 0;
+    }
+    pdfStatus.textContent = "Görseller hazır.";
+  } catch (e) { pdfStatus.textContent = "Dönüştürme başarısız. PDF'yi kontrol et."; }
+}
+
+async function pdfOptimize() {
+  try {
+    const bytes = await pdfDosyaOku("pdfCompressFile");
+    const doc = await PDFLib.PDFDocument.load(bytes);
+    const out = await doc.save({useObjectStreams: true});
+    pdfIndir(out, "optimize.pdf");
+    pdfStatus.textContent =
+      "İşlem tamamlandı. Dosya boyutu mutlaka küçülmeyebilir.";
+  } catch (e) { pdfStatus.textContent = e.message; }
+}
+</script>
 </body>
 </html>
