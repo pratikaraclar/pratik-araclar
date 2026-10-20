@@ -296,6 +296,56 @@ footer {
   }
 }
 
+/* PUBG Mobile hassasiyet aracı */
+.pubg-tool {
+  margin: 24px 0;
+  border: 1px solid #5366a5;
+  background: linear-gradient(145deg, #17294a, #0d1426);
+  border-radius: 18px;
+}
+
+.pubg-tool h2 {
+  color: #c4b5fd;
+}
+
+.pubg-tool button {
+  width: 100%;
+  margin-top: 12px;
+}
+
+.pubg-tool #pubgDegerler {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin: 16px 0;
+}
+
+.pubg-deger {
+  padding: 12px;
+  border: 1px solid #354b78;
+  border-radius: 12px;
+  background: #101b32;
+}
+
+.pubg-deger strong {
+  display: block;
+  color: #a5b4fc;
+  margin-bottom: 6px;
+}
+
+.pubg-deger span {
+  font-size: 22px;
+  font-weight: bold;
+  color: #ffffff;
+}
+
+@media (max-width: 420px) {
+  .pubg-tool #pubgDegerler {
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+}
+
   </style>
 </head>
 <body>
@@ -924,6 +974,48 @@ function gorselKirp() {
     "Kırpılmış görsel indirilmeye hazır.";
 }
 </script>
+
+<section class="card pubg-tool" id="pubg-hassasiyet">
+  <h2>🎮 PUBG Mobile Hassasiyet Ayarlayıcı</h2>
+  <p class="muted">
+    Telefon ve tablet için dengeli hassasiyet önerileri oluştur.
+  </p>
+
+  <label for="pubgCihaz">Cihazın</label>
+  <select id="pubgCihaz">
+    <option value="phone">Telefon</option>
+    <option value="tablet">Tablet</option>
+  </select>
+
+  <label for="pubgJiroskop">Jiroskop kullanımı</label>
+  <select id="pubgJiroskop">
+    <option value="always">Her zaman açık</option>
+    <option value="scope">Dürbün açınca</option>
+    <option value="off">Kapalı</option>
+  </select>
+
+  <label for="pubgParmak">Oynama şeklin</label>
+  <select id="pubgParmak">
+    <option value="2">2 parmak</option>
+    <option value="3">3 parmak</option>
+    <option value="4">4 parmak</option>
+    <option value="5">5 veya daha fazla parmak</option>
+  </select>
+
+  <button type="button" onclick="pubgProfilOlustur()">
+    Hassasiyet Önerisi Oluştur
+  </button>
+
+  <div id="pubgSonuc" class="result" hidden>
+    <h3>Dengeli Hassasiyet Profilin</h3>
+    <p class="muted" id="pubgAciklama"></p>
+    <div id="pubgDegerler"></div>
+    <button type="button" onclick="pubgKopyala()">
+      Değerleri Kopyala
+    </button>
+    <p class="muted" id="pubgMesaj"></p>
+  </div>
+</section>
 
 </main>
 
