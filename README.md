@@ -515,5 +515,19 @@ async function pdfOptimize() {
 </section>
 <!-- GÖRSEL ARAÇLARI SONU -->
  
+<!-- PRATİK ARAÇLAR MENÜSÜ -->
+<nav id="ana-menu" style="padding:15px; margin:15px 0; border-radius:12px; background:#172554; color:white;">
+  <h2 style="margin-top:0;">🛠️ Pratik Araçlar</h2>
+  <p>Araç kategorisini seç:</p>
+  <div style="display:flex; flex-wrap:wrap; gap:8px;">
+    <a href="#pdf-araclari" style="background:#fff;color:#172554;padding:10px;border-radius:8px;text-decoration:none;">📄 PDF Araçları</a>
+    <a href="#gorsel-araclari" style="background:#fff;color:#172554;padding:10px;border-radius:8px;text-decoration:none;">🖼️ Görsel Araçları</a>
+    <a href="#hesaplama-araclari" style="background:#fff;color:#172554;padding:10px;border-radius:8px;text-decoration:none;">🧮 Hesaplama</a>
+    <a href="#metin-araclari" style="background:#fff;color:#172554;padding:10px;border-radius:8px;text-decoration:none;">📝 Metin Araçları</a>
+    <a href="#qr-araclari" style="background:#fff;color:#172554;padding:10px;border-radius:8px;text-decoration:none;">🔳 QR Kod</a>
+    <a href="#web-araclari" style="background:#fff;color:#172554;padding:10px;border-radius:8px;text-decoration:none;">💻 Web Araçları</a>
+  </div>
+</nav>
+
 </body>
 </html>
