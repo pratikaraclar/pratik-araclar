@@ -1017,6 +1017,129 @@ function gorselKirp() {
   </div>
 </section>
 
+<script>
+function pubgProfilOlustur() {
+  const cihaz = document.getElementById("pubgCihaz").value;
+  const jiroskop = document.getElementById("pubgJiroskop").value;
+  const parmak = Number(document.getElementById("pubgParmak").value);
+
+  const sonuc = document.getElementById("pubgDegerler");
+  const ekran = document.getElementById("pubgSonuc");
+  const aciklama = document.getElementById("pubgAciklama");
+  const mesaj = document.getElementById("pubgMesaj");
+
+  sonuc.replaceChildren();
+
+  const kamera = [
+    ["TPP Dürbünsüz", 120],
+    ["FPP Dürbünsüz", 110],
+    ["Red Dot / Holo", 50],
+    ["2x Dürbün", 35],
+    ["3x Dürbün", 25],
+    ["4x Dürbün", 20],
+    ["6x Dürbün", 12],
+    ["8x Dürbün", 10]
+  ];
+
+  const ads = [
+    ["TPP Dürbünsüz", 100],
+    ["FPP Dürbünsüz", 90],
+    ["Red Dot / Holo", 45],
+    ["2x Dürbün", 32],
+    ["3x Dürbün", 24],
+    ["4x Dürbün", 18],
+    ["6x Dürbün", 12],
+    ["8x Dürbün", 8]
+  ];
+
+  const gyro = [
+    ["TPP Dürbünsüz", 300],
+    ["FPP Dürbünsüz", 300],
+    ["Red Dot / Holo", 300],
+    ["2x Dürbün", 280],
+    ["3x Dürbün", 240],
+    ["4x Dürbün", 210],
+    ["6x Dürbün", 100],
+    ["8x Dürbün", 70]
+  ];
+
+  function grupEkle(baslik, degerler, carpan) {
+    const baslikEl = document.createElement("h4");
+    baslikEl.textContent = baslik;
+    baslikEl.style.gridColumn = "1 / -1";
+    sonuc.appendChild(baslikEl);
+
+    degerler.forEach(([ad, deger]) => {
+      const kart = document.createElement("div");
+      kart.className = "pubg-deger";
+
+      const adEl = document.createElement("strong");
+      adEl.textContent = ad;
+
+      const degerEl = document.createElement("span");
+      degerEl.textContent = Math.round(deger * carpan);
+
+      kart.append(adEl, degerEl);
+      sonuc.appendChild(kart);
+    });
+  }
+
+  const cihazCarpani = cihaz === "tablet" ? 0.92 : 1;
+  const parmakCarpani = parmak >= 4 ? 1.04 : 1;
+
+  grupEkle(
+    "Kamera Hassasiyeti",
+    kamera,
+    cihazCarpani * parmakCarpani
+  );
+
+  grupEkle("ADS Hassasiyeti", ads, parmakCarpani);
+
+  if (jiroskop !== "off") {
+    const gyroCarpani = jiroskop === "scope" ? 0.9 : 1;
+    grupEkle("Jiroskop Hassasiyeti", gyro, gyroCarpani);
+    grupEkle("Jiroskop ADS Hassasiyeti", gyro, gyroCarpani);
+  }
+
+  aciklama.textContent =
+    (cihaz === "tablet" ? "Tablet" : "Telefon") +
+    " • " + parmak + " parmak • Dengeli başlangıç profili.";
+
+  mesaj.textContent =
+    "Öneri değerleridir; oyun içi paylaşım kodu değildir.";
+
+  ekran.hidden = false;
+}
+
+function pubgKopyala() {
+  const alan = document.getElementById("pubgDegerler");
+  const mesaj = document.getElementById("pubgMesaj");
+
+  const metin = Array.from(
+    alan.querySelectorAll(".pubg-deger")
+  ).map(kart =>
+    kart.querySelector("strong").textContent + ": " +
+    kart.querySelector("span").textContent
+  ).join("\n");
+
+  const kutu = document.createElement("textarea");
+  kutu.value = metin;
+  document.body.appendChild(kutu);
+  kutu.select();
+
+  try {
+    const basarili = document.execCommand("copy");
+    mesaj.textContent = basarili
+      ? "Değerler kopyalandı!"
+      : "Kopyalanamadı. Değerleri elle seçebilirsin.";
+  } catch (hata) {
+    mesaj.textContent = "Değerleri elle seçip kopyalayabilirsin.";
+  }
+
+  kutu.remove();
+}
+</script>
+
 </main>
 
 <footer>
