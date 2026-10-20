@@ -257,6 +257,67 @@ footer {
 </nav>
 
 <main>
+<section class="hero">
+  <h2>İhtiyacın Olan Her Şey<br><span>Tek Bir Yerde!</span></h2>
+  <p>Metin, hesaplama, PDF ve görsel araçlarıyla işlerini kolaylaştır.</p>  <div class="search-box">
+    <input type="search" id="aracArama" placeholder="Araç ara... (örn. PDF birleştir, kelime sayacı)">
+    <button type="button" onclick="aracBul()">🔎 Ara</button>
+  </div>
+</section><section class="category-grid">
+  <a class="category-card cat-text" href="#metin-araclari">
+    <span>📝</span>
+    <h3>Metin Araçları</h3>
+    <p>Kelime sayacı ve metin işlemleri</p>
+  </a>  <a class="category-card cat-calc" href="#hesaplama-araclari">
+    <span>🧮</span>
+    <h3>Hesaplama Araçları</h3>
+    <p>Yüzde, dört işlem ve indirim</p>
+  </a>  <a class="category-card cat-pdf" href="#pdf-araclari">
+    <span>📄</span>
+    <h3>PDF Araçları</h3>
+    <p>Birleştir, ayır ve dönüştür</p>
+  </a>  <a class="category-card cat-image" href="#gorsel-araclari">
+    <span>🖼️</span>
+    <h3>Görsel Araçları</h3>
+    <p>Boyutlandır, kırp ve dönüştür</p>
+  </a>
+</section><section class="popular-tools">
+  <h2>⭐ Popüler Araçlar</h2>
+  <p>İhtiyacın olan araca hızlıca ulaş.</p>
+  <div class="popular-grid">
+    <a href="#metin-araclari">📝 Kelime ve Metin Sayacı</a>
+    <a href="#hesaplama-araclari">🧮 Yüzde Hesaplama</a>
+    <a href="#pdf-araclari">📎 PDF Birleştirme</a>
+    <a href="#gorsel-araclari">🖼️ Görsel Düzenleme</a>
+  </div>
+</section><script>
+function aracBul() {
+  const alan = document.getElementById("aracArama");
+  const arama = alan.value.trim().toLocaleLowerCase("tr-TR");
+
+  const araclar = [
+    {kelimeler: ["metin", "kelime", "karakter", "sayacı"], id: "metin-araclari"},
+    {kelimeler: ["hesap", "yüzde", "indirim", "dört işlem", "toplama"], id: "hesaplama-araclari"},
+    {kelimeler: ["pdf", "birleştir", "ayır", "sıkıştır", "png"], id: "pdf-araclari"},
+    {kelimeler: ["görsel", "resim", "fotoğraf", "kırp", "boyut"], id: "gorsel-araclari"}
+  ];
+
+  if (!arama) {
+    alan.focus();
+    return;
+  }
+
+  const bulunan = araclar.find(arac =>
+    arac.kelimeler.some(kelime => kelime.includes(arama) || arama.includes(kelime))
+  );
+
+  if (bulunan) {
+    document.getElementById(bulunan.id).scrollIntoView({behavior: "smooth"});
+  } else {
+    alert("Bu arama için araç bulamadım. PDF, metin, hesaplama veya görsel yazmayı dene.");
+  }
+}
+</script>
   
 <section class="card" id="metin-araclari">
   <h2>📝 Kelime ve Metin Sayacı</h2>
