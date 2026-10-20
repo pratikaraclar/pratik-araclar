@@ -173,6 +173,65 @@
 </nav>
 
 <main>
+  
+<section class="card" id="metin-araclari">
+  <h2>📝 Kelime ve Metin Sayacı</h2>
+  <p>Metnini yaz veya yapıştır; sonuçlar otomatik hesaplanır.</p>
+
+  <textarea id="metinSayaci" rows="6"
+    placeholder="Metnini buraya yaz..."></textarea>
+
+  <div class="result" id="metinSayaciSonuc">
+    Kelime: 0 | Karakter: 0 | Boşluksuz karakter: 0
+  </div>
+
+  <button type="button" onclick="metinSayaciTemizle()">Temizle</button>
+  <button type="button" onclick="metinSayaciKopyala()">Metni kopyala</button>
+</section>
+
+<script>
+(function () {
+  const alan = document.getElementById("metinSayaci");
+  const sonuc = document.getElementById("metinSayaciSonuc");
+
+  function guncelle() {
+    const metin = alan.value;
+    const temiz = metin.trim();
+    const kelime = temiz ? temiz.split(/\s+/u).length : 0;
+
+    sonuc.textContent =
+      "Kelime: " + kelime +
+      " | Karakter: " + metin.length +
+      " | Boşluksuz karakter: " + metin.replace(/\s/g, "").length;
+  }
+
+  alan.addEventListener("input", guncelle);
+
+  window.metinSayaciTemizle = function () {
+    alan.value = "";
+    guncelle();
+  };
+
+  window.metinSayaciKopyala = async function () {
+    if (!alan.value) {
+      alert("Önce bir metin yaz.");
+      return;
+    }
+
+    try {
+      await navigator.clipboard.writeText(alan.value);
+      alert("Metin kopyalandı!");
+    } catch (e) {
+      alan.focus();
+      alan.select();
+      alert("Metni seçtim. Kopyalamak için Kopyala seçeneğine dokun.");
+    }
+  };
+
+  guncelle();
+})();
+</script>
+
   <!-- Diğer araç bölümleri sonraki parçalarda eklenecek -->
 </main>
 
