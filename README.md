@@ -570,6 +570,160 @@ async function pdfSikistir() {
 }
 </script>
 
+<section class="card" id="gorsel-araclari">
+  <h2>🖼️ Görsel Araçları</h2>
+  <p class="muted">Görsel seç, boyutunu değiştir ve farklı formatlarda indir.</p>
+
+  <label for="gorselDosya">Görsel dosyası seç</label>
+  <input type="file" id="gorselDosya" accept="image/*">
+
+  <label for="gorselFormat">Çıktı formatı</label>
+  <select id="gorselFormat">
+    <option value="image/png">PNG</option>
+    <option value="image/jpeg">JPG</option>
+    <option value="image/webp">WebP</option>
+  </select>
+
+  <label for="gorselGenislik">Genişlik (piksel)</label>
+  <input type="number" id="gorselGenislik" min="1" placeholder="Örn. 800">
+
+  <label for="gorselYukseklik">Yükseklik (piksel)</label>
+  <input type="number" id="gorselYukseklik" min="1" placeholder="Örn. 600">
+
+  <button type="button" onclick="gorselOnizle()">Görseli hazırla</button>
+  <div id="gorselSonuc" class="result">Görsel seçilmedi.</div>
+  <canvas id="gorselCanvas" style="display:none"></canvas>
+  <img id="gorselOnizleme" alt="Düzenlenen görsel ön izlemesi" style="display:none;max-width:100%;margin-top:12px">
+
+  <hr>
+  <h3>✂️ Görsel Kırpma</h3>
+  <p class="muted">Kırpma için başlangıç noktası ve boyutları piksel olarak gir.</p>
+
+  <label for="kirpX">Başlangıç X</label>
+  <input type="number" id="kirpX" min="0" value="0">
+
+  <label for="kirpY">Başlangıç Y</label>
+  <input type="number" id="kirpY" min="0" value="0">
+
+  <label for="kirpGenislik">Kırpma genişliği</label>
+  <input type="number" id="kirpGenislik" min="1" placeholder="Örn. 400">
+
+  <label for="kirpYukseklik">Kırpma yüksekliği</label>
+  <input type="number" id="kirpYukseklik" min="1" placeholder="Örn. 300">
+
+  <button type="button" onclick="gorselKirp()">Kırp ve indir</button>
+</section>
+
+<script>
+let kaynakGorsel = null;
+
+function gorselOnizle() {
+  const dosya = document.getElementById("gorselDosya").files[0];
+  const sonuc = document.getElementById("gorselSonuc");
+
+  if (!dosya) {
+    sonuc.textContent = "Önce bir görsel seç.";
+    return;
+  }
+
+  const url = URL.createObjectURL(dosya);
+  const resim = new Image();
+
+  resim.onload = function() {
+    kaynakGorsel = resim;
+
+    const w = Number(document.getElementById("gorselGenislik").value) || resim.naturalWidth;
+    const h = Number(document.getElementById("gorselYukseklik").value) || resim.naturalHeight;
+
+    if (!Number.isInteger(w) || !Number.isInteger(h) ||
+        w < 1 || h < 1 || w > 10000 || h > 10000) {
+      sonuc.textContent = "Boyutlar 1 ile 10000 piksel arasında olmalı.";
+      URL.revokeObjectURL(url);
+      return;
+    }
+
+    const canvas = document.getElementById("gorselCanvas");
+    canvas.width = w;
+    canvas.height = h;
+
+    const ctx = canvas.getContext("2d");
+    const format = document.getElementById("gorselFormat").value;
+
+    if (format === "image/jpeg") {
+      ctx.fillStyle = "#ffffff";
+      ctx.fillRect(0, 0, w, h);
+    }
+
+    ctx.drawImage(resim, 0, 0, w, h);
+
+    const onizleme = document.getElementById("gorselOnizleme");
+    onizleme.src = canvas.toDataURL(format, 0.9);
+    onizleme.style.display = "block";
+
+    sonuc.textContent = "Hazır: " + w + " × " + h + " piksel.";
+    const indir = document.createElement("a");
+    indir.href = onizleme.src;
+    indir.download = "pratik-araclar." +
+      (format === "image/jpeg" ? "jpg" :
+       format === "image/webp" ? "webp" : "png");
+    indir.className = "download";
+    indir.textContent = "Görseli indir";
+    sonuc.appendChild(document.createElement("br"));
+    sonuc.appendChild(indir);
+
+    URL.revokeObjectURL(url);
+  };
+
+  resim.onerror = function() {
+    sonuc.textContent = "Görsel açılamadı.";
+    URL.revokeObjectURL(url);
+  };
+
+  resim.src = url;
+}
+
+function gorselKirp() {
+  if (!kaynakGorsel) {
+    document.getElementById("gorselSonuc").textContent =
+      "Önce görsel seçip Görseli hazırla düğmesine bas.";
+    return;
+  }
+
+  const x = Number(document.getElementById("kirpX").value);
+  const y = Number(document.getElementById("kirpY").value);
+  const w = Number(document.getElementById("kirpGenislik").value);
+  const h = Number(document.getElementById("kirpYukseklik").value);
+
+  if (!Number.isInteger(x) || !Number.isInteger(y) ||
+      !Number.isInteger(w) || !Number.isInteger(h) ||
+      x < 0 || y < 0 || w < 1 || h < 1 ||
+      x + w > kaynakGorsel.naturalWidth ||
+      y + h > kaynakGorsel.naturalHeight) {
+    document.getElementById("gorselSonuc").textContent =
+      "Kırpma alanı görselin sınırları içinde olmalı.";
+    return;
+  }
+
+  const canvas = document.createElement("canvas");
+  canvas.width = w;
+  canvas.height = h;
+  canvas.getContext("2d").drawImage(
+    kaynakGorsel, x, y, w, h, 0, 0, w, h
+  );
+
+  const format = document.getElementById("gorselFormat").value;
+  const a = document.createElement("a");
+  a.href = canvas.toDataURL(format, 0.9);
+  a.download = "kirpilmis-gorsel." +
+    (format === "image/jpeg" ? "jpg" :
+     format === "image/webp" ? "webp" : "png");
+  a.click();
+
+  document.getElementById("gorselSonuc").textContent =
+    "Kırpılmış görsel indirilmeye hazır.";
+}
+</script>
+
 </main>
 
 <footer>
