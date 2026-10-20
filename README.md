@@ -369,5 +369,151 @@ async function pdfOptimize() {
   } catch (e) { pdfStatus.textContent = e.message; }
 }
 </script>
+
+<!-- GÖRSEL ARAÇLARI -->
+<section id="gorsel-araclari" style="max-width:900px;margin:24px auto;padding:20px;font-family:Arial,sans-serif;">
+  <h2>🖼️ Görsel Araçları</h2>
+  <p>Fotoğraflarını ücretsiz olarak düzenle.</p>
+
+  <label for="imgFile">Fotoğraf seç:</label>
+  <input id="imgFile" type="file" accept="image/*" style="display:block;margin:12px 0;">
+
+  <label for="imgFormat">Çıktı formatı:</label>
+  <select id="imgFormat" style="display:block;margin:8px 0;padding:8px;">
+    <option value="image/jpeg">JPG</option>
+    <option value="image/png">PNG</option>
+    <option value="image/webp">WebP</option>
+  </select>
+
+  <label for="imgQuality">Kalite / sıkıştırma:</label>
+  <input id="imgQuality" type="range" min="30" max="100" value="80" style="display:block;margin:8px 0;">
+
+  <label for="imgWidth">Yeni genişlik (piksel):</label>
+  <input id="imgWidth" type="number" min="1" max="10000" placeholder="Boş bırak: orijinal" style="display:block;margin:8px 0;padding:8px;width:90%;">
+
+  <label for="imgHeight">Yeni yükseklik (piksel):</label>
+  <input id="imgHeight" type="number" min="1" max="10000" placeholder="Boş bırak: orijinal" style="display:block;margin:8px 0;padding:8px;width:90%;">
+
+  <label style="display:block;margin:12px 0;">
+    <input id="imgCrop" type="checkbox">
+    Ortadan kırp (seçilen boyutlara göre)
+  </label>
+
+  <button id="imgProcess" type="button" style="padding:12px 18px;cursor:pointer;">
+    Görseli işle ve indir
+  </button>
+
+  <p id="imgStatus" role="status" aria-live="polite"></p>
+  <img id="imgPreview" alt="İşlenen görsel önizlemesi"
+       style="display:none;max-width:100%;height:auto;margin-top:12px;">
+
+  <script>
+  (() => {
+    const fileInput = document.getElementById("imgFile");
+    const formatInput = document.getElementById("imgFormat");
+    const qualityInput = document.getElementById("imgQuality");
+    const widthInput = document.getElementById("imgWidth");
+    const heightInput = document.getElementById("imgHeight");
+    const cropInput = document.getElementById("imgCrop");
+    const status = document.getElementById("imgStatus");
+    const preview = document.getElementById("imgPreview");
+    const button = document.getElementById("imgProcess");
+    let previewUrl = null;
+
+    button.addEventListener("click", async () => {
+      let downloadUrl = null;
+      button.disabled = true;
+
+      try {
+        const file = fileInput.files[0];
+        if (!file) throw new Error("Önce bir fotoğraf seç.");
+
+        if (!file.type.startsWith("image/"))
+          throw new Error("Lütfen geçerli bir görsel seç.");
+
+        const bitmap = await createImageBitmap(file);
+        const originalW = bitmap.width;
+        const originalH = bitmap.height;
+
+        const rawW = widthInput.value.trim();
+        const rawH = heightInput.value.trim();
+        let w = rawW ? Number(rawW) : originalW;
+        let h = rawH ? Number(rawH) : originalH;
+
+        if (!Number.isInteger(w) || !Number.isInteger(h) ||
+            w < 1 || h < 1 || w > 10000 || h > 10000)
+          throw new Error("Genişlik ve yükseklik 1–10000 arasında tam sayı olmalı.");
+
+        if (!rawW && rawH) w = Math.round(originalW * h / originalH);
+        if (rawW && !rawH) h = Math.round(originalH * w / originalW);
+
+        if (w * h > 40000000)
+          throw new Error("Çıktı çok büyük. Daha küçük boyutlar seç.");
+
+        const canvas = document.createElement("canvas");
+        canvas.width = w;
+        canvas.height = h;
+        const ctx = canvas.getContext("2d");
+
+        if (formatInput.value === "image/jpeg") {
+          ctx.fillStyle = "#ffffff";
+          ctx.fillRect(0, 0, w, h);
+        }
+
+        if (cropInput.checked) {
+          const scale = Math.max(w / originalW, h / originalH);
+          const sw = w / scale;
+          const sh = h / scale;
+          ctx.drawImage(bitmap,
+            (originalW - sw) / 2, (originalH - sh) / 2, sw, sh,
+            0, 0, w, h);
+        } else {
+          ctx.drawImage(bitmap, 0, 0, w, h);
+        }
+
+        bitmap.close();
+
+        const blob = await new Promise(resolve =>
+          canvas.toBlob(resolve, formatInput.value,
+            Number(qualityInput.value) / 100)
+        );
+
+        if (!blob) throw new Error("Bu görsel dönüştürülemedi.");
+
+        const ext = {
+          "image/jpeg": "jpg",
+          "image/png": "png",
+          "image/webp": "webp"
+        }[blob.type] || "png";
+
+        downloadUrl = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = downloadUrl;
+        a.download = "pratik-araclar." + ext;
+        a.click();
+
+        if (previewUrl) URL.revokeObjectURL(previewUrl);
+        previewUrl = URL.createObjectURL(blob);
+        preview.src = previewUrl;
+        preview.style.display = "block";
+
+        status.textContent =
+          "Tamamlandı! Orijinal: " +
+          Math.round(file.size / 1024) + " KB; yeni: " +
+          Math.round(blob.size / 1024) + " KB.";
+        canvas.width = 0;
+        canvas.height = 0;
+      } catch (error) {
+        status.textContent = error.message || "İşlem başarısız.";
+      } finally {
+        if (downloadUrl) setTimeout(() => URL.revokeObjectURL(downloadUrl), 60000);
+        button.disabled = false;
+      }
+    });
+  })();
+  </script>
+</section>
+<!-- GÖRSEL ARAÇLARI SONU -->
+ 
 </body>
 </html>
