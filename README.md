@@ -240,6 +240,62 @@ footer {
   }
 }
 
+/* Renkli araç kartları */
+.category-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+  margin: 24px 0;
+}
+
+.category-grid .card {
+  position: relative;
+  overflow: hidden;
+  min-height: 170px;
+  padding: 22px;
+  border: 1px solid #354b78;
+  border-radius: 18px;
+  background: linear-gradient(145deg, #17294a, #111a30);
+  box-shadow: 0 8px 24px #00000025;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.category-grid .card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 30px #6366f133;
+}
+
+.category-grid .card:nth-child(1) {
+  background: linear-gradient(145deg, #1e3a70, #111a30);
+  border-color: #3b82f6;
+}
+
+.category-grid .card:nth-child(2) {
+  background: linear-gradient(145deg, #115e59, #111a30);
+  border-color: #2dd4bf;
+}
+
+.category-grid .card:nth-child(3) {
+  background: linear-gradient(145deg, #542c85, #111a30);
+  border-color: #a78bfa;
+}
+
+.category-grid .card:nth-child(4) {
+  background: linear-gradient(145deg, #873d20, #111a30);
+  border-color: #fb923c;
+}
+
+@media (max-width: 420px) {
+  .category-grid {
+    gap: 10px;
+  }
+
+  .category-grid .card {
+    min-height: 150px;
+    padding: 14px;
+  }
+}
+
   </style>
 </head>
 <body>
