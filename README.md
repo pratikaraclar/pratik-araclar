@@ -232,7 +232,112 @@
 })();
 </script>
 
-  <!-- Diğer araç bölümleri sonraki parçalarda eklenecek -->
+  
+<section class="card" id="hesaplama-araclari">
+  <h2>🧮 Hesaplama Araçları</h2>
+
+  <h3>Yüzde Hesaplama</h3>
+  <label for="hesapYuzde">Yüzde oranı (%)</label>
+  <input type="number" id="hesapYuzde" placeholder="Örn. 20">
+
+  <label for="hesapSayi">Sayı</label>
+  <input type="number" id="hesapSayi" placeholder="Örn. 500">
+
+  <button type="button" onclick="yuzdeHesaplaYeni()">Hesapla</button>
+  <div class="result" id="yuzdeSonucYeni">Sonuç burada görünecek.</div>
+
+  <hr>
+
+  <h3>Dört İşlem</h3>
+  <label for="hesapSayi1">Birinci sayı</label>
+  <input type="number" id="hesapSayi1" placeholder="Örn. 100">
+
+  <label for="hesapIslem">İşlem seç</label>
+  <select id="hesapIslem">
+    <option value="+">Toplama (+)</option>
+    <option value="-">Çıkarma (-)</option>
+    <option value="*">Çarpma (×)</option>
+    <option value="/">Bölme (÷)</option>
+  </select>
+
+  <label for="hesapSayi2">İkinci sayı</label>
+  <input type="number" id="hesapSayi2" placeholder="Örn. 20">
+
+  <button type="button" onclick="dortIslemYeni()">Hesapla</button>
+  <div class="result" id="dortIslemSonucYeni">Sonuç burada görünecek.</div>
+
+  <hr>
+
+  <h3>İndirim Hesaplama</h3>
+  <label for="indirimFiyatYeni">Ürün fiyatı (TL)</label>
+  <input type="number" id="indirimFiyatYeni" min="0" step="any" placeholder="Örn. 1000">
+
+  <label for="indirimOranYeni">İndirim oranı (%)</label>
+  <input type="number" id="indirimOranYeni" min="0" max="100" step="any" placeholder="Örn. 15">
+
+  <button type="button" onclick="indirimHesaplaYeni()">Hesapla</button>
+  <div class="result" id="indirimSonucYeni">Sonuç burada görünecek.</div>
+</section>
+
+<script>
+function yuzdeHesaplaYeni() {
+  const o = document.getElementById("hesapYuzde").value;
+  const s = document.getElementById("hesapSayi").value;
+  const r = document.getElementById("yuzdeSonucYeni");
+
+  if (o === "" || s === "") {
+    r.textContent = "İki alanı da doldur.";
+    return;
+  }
+
+  r.textContent = "Sonuç: " + (Number(o) * Number(s) / 100);
+}
+
+function dortIslemYeni() {
+  const a = document.getElementById("hesapSayi1").value;
+  const b = document.getElementById("hesapSayi2").value;
+  const i = document.getElementById("hesapIslem").value;
+  const r = document.getElementById("dortIslemSonucYeni");
+
+  if (a === "" || b === "") {
+    r.textContent = "İki sayıyı da gir.";
+    return;
+  }
+
+  if (i === "/" && Number(b) === 0) {
+    r.textContent = "Sıfıra bölme yapılamaz.";
+    return;
+  }
+
+  let sonuc;
+  if (i === "+") sonuc = Number(a) + Number(b);
+  if (i === "-") sonuc = Number(a) - Number(b);
+  if (i === "*") sonuc = Number(a) * Number(b);
+  if (i === "/") sonuc = Number(a) / Number(b);
+
+  r.textContent = "Sonuç: " + sonuc;
+}
+
+function indirimHesaplaYeni() {
+  const f = document.getElementById("indirimFiyatYeni").value;
+  const o = document.getElementById("indirimOranYeni").value;
+  const r = document.getElementById("indirimSonucYeni");
+
+  if (f === "" || o === "" || Number(f) < 0 ||
+      Number(o) < 0 || Number(o) > 100) {
+    r.textContent = "Fiyatı ve %0–100 arasındaki indirim oranını kontrol et.";
+    return;
+  }
+
+  const indirim = Number(f) * Number(o) / 100;
+  const sonFiyat = Number(f) - indirim;
+
+  r.textContent =
+    "İndirim tutarı: " + indirim.toFixed(2) +
+    " TL | İndirimli fiyat: " + sonFiyat.toFixed(2) + " TL";
+}
+</script>
+
 </main>
 
 <footer>
