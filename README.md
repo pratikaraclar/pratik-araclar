@@ -7,155 +7,239 @@
   <title>Pratik Araçlar</title>
   <meta name="description" content="Ücretsiz çevrim içi PDF, metin, görsel ve hesaplama araçları.">
   <style>
-    * {
-      box-sizing: border-box;
-    }
+    
+      * {
+  box-sizing: border-box;
+}
 
-    html {
-      scroll-behavior: smooth;
-    }
+html {
+  scroll-behavior: smooth;
+}
 
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #f1f5f9;
-      color: #172033;
-      line-height: 1.6;
-    }
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  background: #080d1b;
+  color: #f1f5f9;
+  line-height: 1.7;
+}
 
-    header {
-      background: #172554;
-      color: white;
-      text-align: center;
-      padding: 28px 16px;
-    }
+header {
+  text-align: center;
+  padding: 52px 18px 45px;
+  color: white;
+  background: radial-gradient(ellipse at top, #3730a3 0%, #171642 45%, #080d1b 100%);
+  border-bottom: 1px solid #34315f;
+}
 
-    header h1 {
-      margin: 0 0 8px;
-      font-size: 30px;
-    }
+header h1 {
+  margin: 0 0 12px;
+  font-size: clamp(30px, 6vw, 48px);
+  font-weight: 800;
+  letter-spacing: -1px;
+}
 
-    header p {
-      margin: 0;
-    }
+header p {
+  margin: 0 auto;
+  max-width: 620px;
+  color: #c7d2fe;
+  font-size: 16px;
+}
 
-    nav {
-      background: white;
-      padding: 14px;
-      display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
-      gap: 8px;
-      box-shadow: 0 2px 8px #00000010;
-    }
+nav {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  padding: 14px;
+  background: #0c1224ee;
+  border-bottom: 1px solid #283452;
+  backdrop-filter: blur(12px);
+}
 
-    nav a {
-      display: inline-block;
-      background: #e0e7ff;
-      color: #172554;
-      padding: 9px 12px;
-      border-radius: 9px;
-      text-decoration: none;
-      font-size: 14px;
-      font-weight: bold;
-    }
+nav a {
+  display: inline-block;
+  padding: 9px 15px;
+  border: 1px solid #343e65;
+  border-radius: 10px;
+  background: #151e36;
+  color: #e0e7ff;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: bold;
+  transition: 0.2s ease;
+}
 
-    nav a:hover {
-      background: #c7d2fe;
-    }
+nav a:hover {
+  background: #3730a3;
+  border-color: #818cf8;
+  transform: translateY(-2px);
+}
 
-    main {
-      width: 100%;
-      max-width: 900px;
-      margin: 20px auto;
-      padding: 0 14px;
-    }
+main {
+  width: 100%;
+  max-width: 1080px;
+  margin: 30px auto;
+  padding: 0 18px;
+}
 
-    .card {
-      background: white;
-      padding: 20px;
-      margin-bottom: 18px;
-      border-radius: 14px;
-      box-shadow: 0 3px 12px #0000000a;
-      scroll-margin-top: 15px;
-    }
+.card {
+  margin-bottom: 22px;
+  padding: 25px;
+  background: linear-gradient(145deg, #151e33, #101729);
+  border: 1px solid #293653;
+  border-radius: 18px;
+  box-shadow: 0 12px 32px #00000020;
+  scroll-margin-top: 90px;
+}
 
-    h2 {
-      color: #172554;
-      margin-top: 0;
-    }
+h2 {
+  margin-top: 0;
+  color: #c4b5fd;
+  font-size: 25px;
+}
 
-    input, textarea, select, button {
-      font: inherit;
-      max-width: 100%;
-    }
+h3 {
+  margin-top: 22px;
+  color: #e0e7ff;
+}
 
-    input, textarea, select {
-      width: 100%;
-      padding: 11px;
-      margin: 6px 0 12px;
-      border: 1px solid #cbd5e1;
-      border-radius: 8px;
-    }
+p {
+  overflow-wrap: anywhere;
+}
 
-    button, .file-label {
-      display: inline-block;
-      border: 0;
-      border-radius: 8px;
-      padding: 11px 15px;
-      background: #1d4ed8;
-      color: white;
-      cursor: pointer;
-      font-weight: bold;
-    }
+input, textarea, select, button {
+  max-width: 100%;
+  font: inherit;
+}
 
-    button:hover, .file-label:hover {
-      background: #1e40af;
-    }
+input, textarea, select {
+  width: 100%;
+  margin: 6px 0 14px;
+  padding: 12px 14px;
+  border: 1px solid #354361;
+  border-radius: 10px;
+  background: #0b1223;
+  color: #f8fafc;
+  outline: none;
+}
 
-    .result {
-      margin-top: 12px;
-      padding: 12px;
-      background: #eff6ff;
-      border-radius: 8px;
-      overflow-wrap: anywhere;
-    }
+input:focus, textarea:focus, select:focus {
+  border-color: #818cf8;
+  box-shadow: 0 0 0 3px #6366f120;
+}
 
-    .tool-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 14px;
-    }
+input::placeholder, textarea::placeholder {
+  color: #8290ac;
+}
 
-    .tool-grid .card {
-      margin-bottom: 0;
-    }
+button, .file-label {
+  display: inline-block;
+  margin: 4px 5px 8px 0;
+  padding: 11px 17px;
+  border: 1px solid #818cf8;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #6366f1, #7c3aed);
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
 
-    .muted {
-      color: #64748b;
-      font-size: 14px;
-    }
+button:hover, .file-label:hover {
+  filter: brightness(1.15);
+  transform: translateY(-1px);
+}
 
-    footer {
-      text-align: center;
-      padding: 22px 12px;
-      color: #64748b;
-    }
+.result {
+  margin-top: 12px;
+  padding: 14px;
+  border: 1px solid #30416a;
+  border-radius: 11px;
+  background: #111d35;
+  color: #e0e7ff;
+  overflow-wrap: anywhere;
+}
 
-    @media (max-width: 480px) {
-      header h1 {
-        font-size: 25px;
-      }
+.tool-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+}
 
-      .card {
-        padding: 15px;
-      }
+.tool-grid .card {
+  margin-bottom: 0;
+}
 
-      nav a {
-        flex: 1 1 42%;
-        text-align: center;
-      }
-    }
+.muted {
+  color: #a5b4cf;
+  font-size: 14px;
+}
+
+hr {
+  margin: 24px 0;
+  border: 0;
+  border-top: 1px solid #303b56;
+}
+
+label {
+  color: #dbeafe;
+  font-weight: 600;
+}
+
+a.download {
+  display: inline-block;
+  margin-top: 8px;
+  color: #c4b5fd;
+  font-weight: bold;
+}
+
+footer {
+  padding: 26px 14px;
+  border-top: 1px solid #293653;
+  background: #0b1020;
+  color: #9aa9c4;
+  text-align: center;
+}
+
+@media (max-width: 600px) {
+  header {
+    padding: 38px 15px;
+  }
+
+  header h1 {
+    font-size: 29px;
+  }
+
+  main {
+    margin: 20px auto;
+    padding: 0 12px;
+  }
+
+  .card {
+    padding: 18px;
+    border-radius: 14px;
+  }
+
+  nav {
+    gap: 7px;
+    padding: 10px;
+  }
+
+  nav a {
+    flex: 1 1 40%;
+    text-align: center;
+    padding: 9px 8px;
+  }
+
+  button {
+    max-width: 100%;
+  }
+}
+
   </style>
 </head>
 <body>
